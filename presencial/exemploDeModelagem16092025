@@ -1,0 +1,122 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+/**
+7. Crie um modelo estrela que responda as 
+seguintes questões de negócio: 
+
+- Total do valor gasto por cliente por promoção 
+de cada departamento por semana do ano 
+
+select 
+  dc.nome
+  ,dpr.nome
+  ,dd.nome
+  ,dt.semana_ano
+  ,sum(fv.vlr_compra)
+from
+f_venda fv
+  inner join d_calendario dt on fv.calendario_id = dt.calendario_id
+  inner join d_cliente dc on fv.clinte_id = dc.clinte_id
+  inner join d_promocao dpr on dpr.promocao_id = fv.promocao_id
+  inner join d_Departamento dd on d.departamento_id = fv.departamento_id
+group by 
+  dc.nome
+  ,dpr.nome
+  ,dd.nome
+  ,dt.semana_ano
+
+- Total da quantidade de produtos vendidos por fabricante 
+por departamento por trimestre 
+
+select 
+  sum(fv.qtd_vendida),
+  dp.nome,
+  dp.fabricante,
+  dd.nome,
+  dt.trimestre_ano
+from
+f_venda fv
+inner join d_calendario dt on dt.calendario _id fv.calendario_id
+inner join d_produto dp on dp.produto_id = fv.produto_id
+inner join d_departamento dd on dd.departamento_id = fv.departamento_id
+group by 
+  dp.nome,
+  dp.fabricante,
+  dd.nome,
+  dt.trimestre_ano
+
+- Top 10 clientes com maior volume de quantidade de produtos comprados
+ por mês 
+
+select top 10
+  dc.client_id,
+  dt.mes_ano
+  sum(fv.qtd_vendida) as total
+from f_venda fv
+  inner join d_cliente dc on dc.client_id = fv.client_id
+  inner join d_calendario dt on dt.calendario_id = fv.calendario_id
+group by dc.client_id, dt.mes_ano
+order by total desc
+
+- Media de valor comprado por dia
+
+- Media de valor comprado por cliente a cada mes do ano de 2025.
+
+- Clientes com maior recorrencia de compra por ano.
+
+select 
+  dc.nome,
+  dt.ano,
+  count(distinct fv.num_compra) recorrencia
+from f_venda fv
+  inner join d_cliente dc on dc.client_id = fv.client_id
+  inner join d_calendario dt on dt.calendario_id = fv.calendario_id
+group by   
+  dc.nome,
+  dt.ano
+order by ano asc, recorrencia desc
+
+
+o modelo deve ter apenas um único fato. 
+Por fim, prove utilizando SQL que o modelo produzido 
+é suficiente para responder ao indicares e medidas 
+pedidas no enunciado. 
+Use o modelo relacional como guia da proposição,
+ e use o verso da folha para produzir sua analise. 
+**/
+
+Table f_venda as fv{
+  num_compra int
+  client_id int [ref: >dc.client_id]
+  promocao_id int [ref: > dpr.promocao_id]
+  departamento_id int [ref: > dd.departamento_id]
+  calendario_id int [ref: >dt.calendario_id]
+  produto_id int [ref: >dp.produto_id]
+  qtd_vendida numeric
+  vlr_compra numeric
+}
+Table d_cliente as dc{
+  client_id int
+  nome varchar
+}
+table d_promocao as dpr{
+  promocao_id int
+  nome varchar
+}
+table d_produto as dp{
+  produto_id int
+  nome varchar
+  fabricante vachar
+}
+table d_departamento as dd{
+    departamento_id int
+    nome varchar
+}
+table d_calendario as dt{
+  calendario_id int
+  data date
+  semana_ano int
+  ano int
+  trimesre_ano varchar /// 1 Trim 2025
+  mes_ano int
+}
