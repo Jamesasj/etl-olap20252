@@ -20,3 +20,5 @@ docker run -e "ACCEPT_EULA=Y" -e  "MSSQL_SA_PASSWORD=Senha123" -p 1433:1433 --na
 ```
 
 - Apos iniciar o banco de dado sera necessario restartar o backup do banco de dados AdventureWorks
+
+https://superset.apache.org/docs/using-superset/exploring-data/
